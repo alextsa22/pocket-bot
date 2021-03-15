@@ -2,7 +2,10 @@ package main
 
 import (
 	"github.com/alextsa22/pocket-bot/pkg/pocket"
+	"github.com/alextsa22/pocket-bot/pkg/repository/redisdb"
+	"github.com/alextsa22/pocket-bot/pkg/server"
 	"github.com/alextsa22/pocket-bot/pkg/telegram"
+	"github.com/go-redis/redis"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/joho/godotenv"
 	"log"
@@ -16,18 +19,33 @@ func main() {
 
 	bot, err := tgbotapi.NewBotAPI(os.Getenv("TOKEN"))
 	if err != nil {
-		log.Fatal("1", err)
+		log.Fatal(err)
 	}
 
 	bot.Debug = true
 
 	pocketClient, err := pocket.NewClient(os.Getenv("CONSUMER_KEY"))
 	if err != nil {
-		log.Fatal("2", err)
+		log.Fatal(err)
 	}
 
-	telegramBot := telegram.NewBot(bot, pocketClient, "http://localhost")
-	if err := telegramBot.Start(); err != nil {
-		log.Fatal("3", err)
+	redisClient := redis.NewClient(&redis.Options{
+		Addr: "localhost:6379",
+	})
+
+	tokenRepo := redisdb.NewTokenRepository(redisClient)
+
+	telegramBot := telegram.NewBot(bot, pocketClient, tokenRepo, "http://localhost/")
+
+	authorizationServer := server.NewAuthorizationServer(pocketClient, tokenRepo, "https://t.me/pocket_x_bot")
+
+	go func() {
+		if err := telegramBot.Start(); err != nil {
+			log.Fatal(err)
+		}
+	}()
+
+	if err := authorizationServer.Start(); err != nil {
+		log.Fatal()
 	}
 }

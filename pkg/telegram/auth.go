@@ -3,6 +3,7 @@ package telegram
 import (
 	"context"
 	"fmt"
+	"github.com/alextsa22/pocket-bot/pkg/repository"
 )
 
 func (b *Bot) generateAuthorizationLink(chatId int64) (string, error) {
@@ -10,6 +11,10 @@ func (b *Bot) generateAuthorizationLink(chatId int64) (string, error) {
 
 	requestToken, err := b.pocketClient.GetRequestToken(context.Background(), redirectURL)
 	if err != nil {
+		return "", err
+	}
+
+	if err := b.tokenRepo.Set(chatId, requestToken, repository.RequestToken); err != nil {
 		return "", err
 	}
 
