@@ -1,0 +1,14 @@
+version: "3.8"
+
+services:
+  redis:
+    image: redis:latest
+    command:
+      - /usr/local/etc/redis/redis.conf
+    volumes:
+      - ./configs/redis.conf:/usr/local/etc/redis/redis.conf
+      - ./.database/redis/data:/data
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - 6379:6379
