@@ -2,6 +2,7 @@ package telegram
 
 import (
 	"github.com/alextsa22/pocket-bot/pkg/pocket"
+	"github.com/alextsa22/pocket-bot/pkg/repository"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"log"
 )
@@ -9,11 +10,12 @@ import (
 type Bot struct {
 	bot          *tgbotapi.BotAPI
 	pocketClient *pocket.Client
+	tokenRepo    repository.TokenRepository
 	redirectURL  string
 }
 
-func NewBot(bot *tgbotapi.BotAPI, client *pocket.Client, redirectURL string) *Bot {
-	return &Bot{bot: bot, pocketClient: client, redirectURL: redirectURL}
+func NewBot(bot *tgbotapi.BotAPI, client *pocket.Client, tr repository.TokenRepository, redirectURL string) *Bot {
+	return &Bot{bot: bot, pocketClient: client, tokenRepo: tr, redirectURL: redirectURL}
 }
 
 func (b *Bot) Start() error {
