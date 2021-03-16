@@ -2,7 +2,10 @@
 .SILENT:
 
 build:
-	go build -o ./.bin/bot cmd/bot/main.go
+	docker-compose build bot
 
-run: build
-	./.bin/bot
+up:
+	docker-compose up bot
+
+down:
+	docker-compose down
