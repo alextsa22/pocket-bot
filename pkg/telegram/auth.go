@@ -4,7 +4,24 @@ import (
 	"context"
 	"fmt"
 	"github.com/alextsa22/pocket-bot/pkg/repository"
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
+
+func (b *Bot) initAuthorizationProcess(message *tgbotapi.Message) error {
+	authLink, err := b.generateAuthorizationLink(message.Chat.ID)
+	if err != nil {
+		return err
+	}
+
+	msg := tgbotapi.NewMessage(message.Chat.ID, fmt.Sprintf(replyStartTemplate, authLink))
+	_, err = b.bot.Send(msg)
+
+	return err
+}
+
+func (b *Bot) getAccessToken(chatID int64) (string, error) {
+	return b.tokenRepo.Get(chatID, repository.AccessToken)
+}
 
 func (b *Bot) generateAuthorizationLink(chatId int64) (string, error) {
 	redirectURL := b.generateRedirectURL(chatId)
