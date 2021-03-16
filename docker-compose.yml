@@ -1,6 +1,16 @@
 version: "3.8"
 
 services:
+  bot:
+    build: ./
+    command: ./bot
+    env_file:
+      - ./.env
+    depends_on:
+      - redis
+    ports:
+      - 80:80
+
   redis:
     image: redis:latest
     command:
@@ -10,5 +20,3 @@ services:
       - ./.database/redis/data:/data
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
-    ports:
-      - 6379:6379
