@@ -32,6 +32,9 @@ func main() {
 	redisClient := redis.NewClient(&redis.Options{
 		Addr: "localhost:6379",
 	})
+	if _, err := redisClient.Ping().Result(); err != nil {
+		log.Fatal(err)
+	}
 
 	tokenRepo := redisdb.NewTokenRepository(redisClient)
 
