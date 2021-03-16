@@ -1,0 +1,17 @@
+bot_url: "https://t.me/pocket_x_bot"
+
+auth_server:
+  host: "localhost"
+  port: "80"
+
+messages:
+  responses:
+    start: "Hey! To save links in your Pocket account, first you need to give me access to it. To do this, follow the link:\n%s"
+    already_authorized: "You are authorized"
+    saved_successfully: "Link saved successfully"
+    unknown_command: "Command not found"
+  errors:
+    default: "Unknown error"
+    unauthorized: "You are not authorized, use the /start command"
+    invalid_url: "This is an invalid link"
+    unable_to_save: "Failed to save link, please try again"

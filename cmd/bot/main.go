@@ -1,46 +1,48 @@
 package main
 
 import (
+	"github.com/alextsa22/pocket-bot/pkg/config"
 	"github.com/alextsa22/pocket-bot/pkg/pocket"
 	"github.com/alextsa22/pocket-bot/pkg/repository/redisdb"
 	"github.com/alextsa22/pocket-bot/pkg/server"
 	"github.com/alextsa22/pocket-bot/pkg/telegram"
 	"github.com/go-redis/redis"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
-	"github.com/joho/godotenv"
 	"log"
 	"os"
 )
 
+const (
+	telegramTokenEnv     = "TOKEN"
+	pocketConsumerKeyEnv = "CONSUMER_KEY"
+)
+
 func main() {
-	if err := godotenv.Load(); err != nil {
-		log.Fatalf("error loading env variables: %s", err)
+	cfg, err := config.Init()
+	if err != nil {
+		log.Fatal(err)
 	}
 
-	bot, err := tgbotapi.NewBotAPI(os.Getenv("TOKEN"))
+	bot, err := tgbotapi.NewBotAPI(os.Getenv(telegramTokenEnv))
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	bot.Debug = true
 
-	pocketClient, err := pocket.NewClient(os.Getenv("CONSUMER_KEY"))
+	pocketClient, err := pocket.NewClient(os.Getenv(pocketConsumerKeyEnv))
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	redisClient := redis.NewClient(&redis.Options{
-		Addr: "localhost:6379",
-	})
-	if _, err := redisClient.Ping().Result(); err != nil {
+	redisClient, err := initRedisClient()
+	if err != nil {
 		log.Fatal(err)
 	}
 
 	tokenRepo := redisdb.NewTokenRepository(redisClient)
-
-	telegramBot := telegram.NewBot(bot, pocketClient, tokenRepo, "http://localhost/")
-
-	authorizationServer := server.NewAuthorizationServer(pocketClient, tokenRepo, "https://t.me/pocket_x_bot")
+	telegramBot := telegram.NewBot(bot, pocketClient, tokenRepo, cfg.AuthServer.GetRedirectURL(), cfg.Messages)
+	authorizationServer := server.NewAuthorizationServer(pocketClient, tokenRepo, cfg.TelegramBotURL)
 
 	go func() {
 		if err := telegramBot.Start(); err != nil {
@@ -51,4 +53,20 @@ func main() {
 	if err := authorizationServer.Start(); err != nil {
 		log.Fatal()
 	}
+}
+
+func initRedisClient() (*redis.Client, error) {
+	redisCfg, err := config.InitRedisConfig()
+	if err != nil {
+		return nil, err
+	}
+
+	client := redis.NewClient(&redis.Options{
+		Addr: redisCfg.Host + ":" + redisCfg.Port,
+	})
+	if _, err = client.Ping().Result(); err != nil {
+		return nil, err
+	}
+
+	return client, nil
 }

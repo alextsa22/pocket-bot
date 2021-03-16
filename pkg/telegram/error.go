@@ -12,15 +12,15 @@ var (
 )
 
 func (b *Bot) handleError(chatID int64, err error) {
-	msg := tgbotapi.NewMessage(chatID, "unknown error")
+	msg := tgbotapi.NewMessage(chatID, b.messages.Errors.Default)
 
 	switch err {
 	case errUnauthorized:
-		msg.Text = "you are not authorized, use the /start command"
+		msg.Text = b.messages.Errors.Unauthorized
 	case errInvalidURL:
-		msg.Text = "this is an invalid link"
+		msg.Text = b.messages.Errors.InvalidURL
 	case errUnableToSave:
-		msg.Text = "failed to save link, please try again"
+		msg.Text = b.messages.Errors.UnableToSave
 	}
 
 	b.bot.Send(msg)
