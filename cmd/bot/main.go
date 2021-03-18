@@ -42,7 +42,7 @@ func main() {
 
 	tokenRepo := redisdb.NewTokenRepository(redisClient)
 	telegramBot := telegram.NewBot(bot, pocketClient, tokenRepo, cfg.AuthServer.GetRedirectURL(), cfg.Messages)
-	authorizationServer := server.NewAuthorizationServer(pocketClient, tokenRepo, cfg.TelegramBotURL)
+	authorizationServer := server.NewAuthorizationServer(cfg.AuthServer.Port, pocketClient, tokenRepo, cfg.TelegramBotURL)
 
 	go func() {
 		if err := telegramBot.Start(); err != nil {

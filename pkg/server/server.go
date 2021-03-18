@@ -8,19 +8,20 @@ import (
 )
 
 type AuthorizationServer struct {
+	port         string
 	server       *http.Server
 	pocketClient *pocket.Client
 	tokenRepo    repository.TokenRepository
 	redirectURL  string
 }
 
-func NewAuthorizationServer(pocketClient *pocket.Client, tokenRepo repository.TokenRepository, redirectURL string) *AuthorizationServer {
-	return &AuthorizationServer{pocketClient: pocketClient, tokenRepo: tokenRepo, redirectURL: redirectURL}
+func NewAuthorizationServer(port string, pocketClient *pocket.Client, tokenRepo repository.TokenRepository, redirectURL string) *AuthorizationServer {
+	return &AuthorizationServer{port: port, pocketClient: pocketClient, tokenRepo: tokenRepo, redirectURL: redirectURL}
 }
 
 func (s *AuthorizationServer) Start() error {
 	s.server = &http.Server{
-		Addr: ":80",
+		Addr:    ":" + s.port,
 		Handler: s,
 	}
 
