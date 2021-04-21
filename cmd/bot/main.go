@@ -1,11 +1,11 @@
 package main
 
 import (
-	"github.com/alextsa22/pocket-bot/pkg/config"
+	"github.com/alextsa22/pocket-bot/internal/config"
+	"github.com/alextsa22/pocket-bot/internal/repository/redisdb"
+	"github.com/alextsa22/pocket-bot/internal/server"
+	"github.com/alextsa22/pocket-bot/internal/telegram"
 	"github.com/alextsa22/pocket-bot/pkg/pocket"
-	"github.com/alextsa22/pocket-bot/pkg/repository/redisdb"
-	"github.com/alextsa22/pocket-bot/pkg/server"
-	"github.com/alextsa22/pocket-bot/pkg/telegram"
 	"github.com/go-redis/redis"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"log"

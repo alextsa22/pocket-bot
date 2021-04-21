@@ -1,7 +1,7 @@
 package redisdb
 
 import (
-	"github.com/alextsa22/pocket-bot/pkg/repository"
+	"github.com/alextsa22/pocket-bot/internal/repository"
 	"github.com/go-redis/redis"
 	"github.com/pkg/errors"
 	"strconv"

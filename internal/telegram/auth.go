@@ -3,7 +3,7 @@ package telegram
 import (
 	"context"
 	"fmt"
-	"github.com/alextsa22/pocket-bot/pkg/repository"
+	"github.com/alextsa22/pocket-bot/internal/repository"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 

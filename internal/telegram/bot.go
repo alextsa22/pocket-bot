@@ -1,9 +1,9 @@
 package telegram
 
 import (
-	"github.com/alextsa22/pocket-bot/pkg/config"
+	"github.com/alextsa22/pocket-bot/internal/config"
+	"github.com/alextsa22/pocket-bot/internal/repository"
 	"github.com/alextsa22/pocket-bot/pkg/pocket"
-	"github.com/alextsa22/pocket-bot/pkg/repository"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"log"
 )

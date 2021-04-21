@@ -1,8 +1,8 @@
 package server
 
 import (
+	"github.com/alextsa22/pocket-bot/internal/repository"
 	"github.com/alextsa22/pocket-bot/pkg/pocket"
-	"github.com/alextsa22/pocket-bot/pkg/repository"
 	"net/http"
 	"strconv"
 )
