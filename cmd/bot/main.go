@@ -8,7 +8,7 @@ import (
 	"github.com/alextsa22/pocket-bot/pkg/pocket"
 	"github.com/go-redis/redis"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
-	"log"
+	"github.com/sirupsen/logrus"
 	"os"
 )
 
@@ -18,27 +18,33 @@ const (
 )
 
 func main() {
+	logrus.StandardLogger().SetFormatter(&logrus.JSONFormatter{})
+
 	cfg, err := config.Init()
 	if err != nil {
-		log.Fatal(err)
+		logrus.WithError(err).Fatal("config init error")
 	}
+	logrus.Info("config initialized")
 
 	bot, err := tgbotapi.NewBotAPI(os.Getenv(telegramTokenEnv))
 	if err != nil {
-		log.Fatal(err)
+		logrus.WithError(err).Fatal("bot init error")
 	}
+	logrus.Info("bot initialized")
 
-	bot.Debug = true
+	bot.Debug = false // true
 
 	pocketClient, err := pocket.NewClient(os.Getenv(pocketConsumerKeyEnv))
 	if err != nil {
-		log.Fatal(err)
+		logrus.WithError(err).Fatal("pocket client init error")
 	}
+	logrus.Info("pocket client initialized")
 
 	redisClient, err := initRedisClient()
 	if err != nil {
-		log.Fatal(err)
+		logrus.WithError(err).Fatal("redis client init error")
 	}
+	logrus.Info("redis client initialized")
 
 	tokenRepo := redisdb.NewTokenRepository(redisClient)
 	telegramBot := telegram.NewBot(bot, pocketClient, tokenRepo, cfg.AuthServer.GetRedirectURL(), cfg.Messages)
@@ -46,12 +52,12 @@ func main() {
 
 	go func() {
 		if err := telegramBot.Start(); err != nil {
-			log.Fatal(err)
+			logrus.WithError(err).Fatal("telegram bot start error")
 		}
 	}()
 
 	if err := authorizationServer.Start(); err != nil {
-		log.Fatal()
+		logrus.WithError(err).Fatal("authorization server error")
 	}
 }
 

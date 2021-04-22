@@ -5,7 +5,7 @@ import (
 	"github.com/alextsa22/pocket-bot/internal/repository"
 	"github.com/alextsa22/pocket-bot/pkg/pocket"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
-	"log"
+	"github.com/sirupsen/logrus"
 )
 
 type Bot struct {
@@ -21,7 +21,7 @@ func NewBot(bot *tgbotapi.BotAPI, client *pocket.Client, tr repository.TokenRepo
 }
 
 func (b *Bot) Start() error {
-	log.Printf("Authorized on account %s", b.bot.Self.UserName)
+	logrus.Infof("authorized on account %s", b.bot.Self.UserName)
 
 	updates, err := b.initUpdatesChannel()
 	if err != nil {
@@ -36,6 +36,7 @@ func (b *Bot) Start() error {
 func (b *Bot) handleUpdates(updates tgbotapi.UpdatesChannel) {
 	for update := range updates {
 		if update.Message == nil { // ignore any non-Message Updates
+			logrus.WithField("update", update).Warn("update without messages")
 			continue
 		}
 
