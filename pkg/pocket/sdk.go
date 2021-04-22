@@ -62,7 +62,7 @@ type (
 
 func (i AddInput) validate() error {
 	if i.URL == "" {
-		return errors.New("required URL values is empty")
+		return errors.New("required url values is empty")
 	}
 
 	if i.AccessToken == "" {
@@ -148,7 +148,7 @@ func (c *Client) Authorize(ctx context.Context, requestToken string) (*Authorize
 
 	accessToken, username := values.Get("access_token"), values.Get("username")
 	if accessToken == "" {
-		return nil, errors.New("empty access token in API response")
+		return nil, errors.New("empty access token in api response")
 	}
 
 	return &AuthorizeResponse{
@@ -190,7 +190,7 @@ func (c *Client) doHTTP(ctx context.Context, endpoint string, body interface{}) 
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		err := fmt.Sprintf("API Error: %s", resp.Header.Get(xErrorHeader))
+		err := fmt.Sprintf("api error: %s", resp.Header.Get(xErrorHeader))
 		return url.Values{}, errors.New(err)
 	}
 

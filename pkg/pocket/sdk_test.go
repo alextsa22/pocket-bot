@@ -317,7 +317,7 @@ func TestClient_Add(t *testing.T) {
 			c := newClient(t, tt.expectedStatusCode, "/v3/add", "")
 
 			if err := c.Add(tt.args.ctx, tt.args.input); (err != nil) != tt.wantErr {
-				t.Errorf("Add() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("add() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
 	}
