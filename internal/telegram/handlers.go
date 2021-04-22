@@ -47,8 +47,8 @@ func (b *Bot) handleMessage(message *tgbotapi.Message) error {
 		return errUnauthorized
 	}
 
-	if err := isValidUrl(message.Text); err != nil {
-		logrus.WithField("url", message.Text).WithError(err).Error(errInvalidURL)
+	if !isValidUrl(message.Text) {
+		logrus.WithField("url", message.Text).Error(errInvalidURL)
 		return errInvalidURL
 	}
 
@@ -65,16 +65,16 @@ func (b *Bot) handleMessage(message *tgbotapi.Message) error {
 	return err
 }
 
-func isValidUrl(text string) error {
+func isValidUrl(text string) bool {
 	_, err := url.ParseRequestURI(text)
 	if err != nil {
-		return err
+		return false
 	}
 
 	u, err := url.Parse(text)
 	if err != nil || u.Scheme == "" || u.Host == "" {
-		return errInvalidURL
+		return false
 	}
 
-	return nil
+	return true
 }
