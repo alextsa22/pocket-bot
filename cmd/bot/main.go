@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"github.com/alextsa22/pocket-bot/internal/config"
 	"github.com/alextsa22/pocket-bot/internal/repository/redisdb"
 	"github.com/alextsa22/pocket-bot/internal/server"
@@ -17,7 +18,11 @@ const (
 	pocketConsumerKeyEnv = "CONSUMER_KEY"
 )
 
+var debugMode = flag.Bool("debug", false, "set debug mode for bot")
+
 func main() {
+	flag.Parse()
+
 	logrus.StandardLogger().SetFormatter(&logrus.JSONFormatter{})
 
 	cfg, err := config.Init()
@@ -32,7 +37,7 @@ func main() {
 	}
 	logrus.Info("bot initialized")
 
-	bot.Debug = false // true
+	bot.Debug = *debugMode
 
 	pocketClient, err := pocket.NewClient(os.Getenv(pocketConsumerKeyEnv))
 	if err != nil {
