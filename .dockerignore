@@ -1,0 +1,14 @@
+# Docker
+.dockerignore
+Dockerfile
+docker-compose.yml
+
+# .idea
+.idea
+
+# git
+.git
+.gitignore
+
+# Markdown files
+*.md
